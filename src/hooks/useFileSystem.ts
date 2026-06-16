@@ -139,7 +139,7 @@ export function useFileSystem() {
       const cards: CharacterCard[] = [];
       
       // Use entries() for more reliable iteration in some environments
-      for await (const [name, handle] of (charDir).entries()) {
+      for await (const [name, handle] of (charDir as FileSystemDirectoryHandle).entries()) {
         console.log(charDir, name, handle);
         if (handle.kind === 'file' && name.endsWith('.json')) {
           const file = await handle.getFile();
