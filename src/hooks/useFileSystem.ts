@@ -7,6 +7,7 @@ import { useWriterStore, FileNode, CharacterCard } from '@/stores/useWriterStore
  * Hook that wraps the FileSystem Access API for reading and writing files.
  */
 export function useFileSystem() {
+
   const {
     setDirectoryHandle,
     setFileTree,
@@ -139,8 +140,8 @@ export function useFileSystem() {
       const cards: CharacterCard[] = [];
       
       // Use entries() for more reliable iteration in some environments
-      for await (const [name, handle] of (charDir as FileSystemDirectoryHandle).entries()) {
-        console.log(charDir, name, handle);
+      for await (const [name, handle] of (charDir as any).entries()) {
+
         if (handle.kind === 'file' && name.endsWith('.json')) {
           const file = await handle.getFile();
           const content = await file.text();
