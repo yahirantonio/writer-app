@@ -1,6 +1,6 @@
 # Writer App
 
-Una aplicación web moderna para escritores que combina un editor de texto enriquecido con herramientas de organización y contexto para escritores.
+Una aplicación web moderna para escritores que combina un editor de texto enriquecido con herramientas de organización y contexto.
 
 ## Características
 
