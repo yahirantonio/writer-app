@@ -39,7 +39,7 @@ export function WriterEditor() {
     if (!editor) return;
     const currentHTML = editor.getHTML();
     if (editorContent !== currentHTML) {
-      editor.commands.setContent(editorContent || '', false);
+      editor.commands.setContent(editorContent || '', {emitUpdate: false});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeFile, editor]);
