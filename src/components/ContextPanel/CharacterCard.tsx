@@ -3,10 +3,13 @@
 import React, { useState } from 'react';
 import { useWriterStore, CharacterCard as CardType } from '@/stores/useWriterStore';
 import { useFileSystem } from '@/hooks/useFileSystem';
+import { useModalStore } from '@/stores/useModalStore';
 
 export function CharacterCard() {
   const characterCards = useWriterStore((s) => s.characterCards);
   const { saveCharacter, deleteCharacter } = useFileSystem();
+  const directoryHandle = useWriterStore((s) => s.directoryHandle);
+  const openModal = useModalStore((s) => s.openModal);
 
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -43,16 +46,20 @@ export function CharacterCard() {
       role: role.trim(),
       description: desc.trim(),
     };
-    
+
     await saveCharacter(card, originalName);
     clearForm();
   };
 
   const handleDelete = async (card: CardType, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm(`¿Eliminar a ${card.name}?`)) {
-      await deleteCharacter(card);
-    }
+    openModal({
+      type: 'confirm',
+      title: 'Eliminar elemento',
+      message: `¿Estás seguro de que quieres eliminar a "${card.name}"? Esta acción no se puede deshacer.`,
+      confirmLabel: 'Eliminar',
+      onConfirm: () => deleteCharacter(card),
+    });
   };
 
   return (
@@ -61,24 +68,26 @@ export function CharacterCard() {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
           Personajes
         </h3>
-        <button
-          onClick={() => {
-            if (isAdding || editingId) clearForm();
-            else setIsAdding(true);
-          }}
-          className="sidebar-btn"
-          title="Agregar personaje"
-        >
-          {isAdding || editingId ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          )}
-        </button>
+        {directoryHandle && (
+          <button
+            onClick={() => {
+              if (isAdding || editingId) clearForm();
+              else setIsAdding(true);
+            }}
+            className="sidebar-btn"
+            title="Agregar personaje"
+          >
+            {isAdding || editingId ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            )}
+          </button>
+        )}
       </div>
 
       {/* ── Add/Edit form ────────────────────────────────────────────────── */}
